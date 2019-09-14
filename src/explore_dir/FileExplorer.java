@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
@@ -16,12 +17,23 @@ import entity.DataObject;
 
 public class FileExplorer
 {
+	ArrayList<DataObject>dataObjects;
     public FileExplorer(String rootFileName)
     {
+    	dataObjects=new ArrayList<DataObject>();
     	File rootFile = new File(rootFileName);
         browseClasses(rootFile);
     }
-    public void browseClasses(File rootFile) {
+    
+    public ArrayList<DataObject> getDataObjects() {
+		return dataObjects;
+	}
+
+	public void setDataObjects(ArrayList<DataObject> dataObjects) {
+		this.dataObjects = dataObjects;
+	}
+
+	public void browseClasses(File rootFile) {
     	new DirExplorer((level, path, file) -> path.endsWith(".java"), (level, path, file) -> {
     		ASTParser parser = ASTParser.newParser(AST.JLS3);
     		
@@ -39,15 +51,18 @@ public class FileExplorer
     				dataObject.setMethod(node.toString());    				
     				dataObject.setMethodName(node.getName().toString());
     				
-    				//System.out.println(parseComment(node.getJavadoc()));
+    				String res = parseComment(node.getJavadoc());
+    				dataObject.setComment(res);
     				
-    				dataObject.setComment(parseComment(node.getJavadoc()));
     				return super.visit(node);
     			}
     		});
     		
+    		//if(dataObject.getComment()!=null)
+    			dataObjects.add(dataObject);
+    		
     		//System.out.println(dataObject.getFileName());
-    		System.out.println(dataObject.getComment());
+    		//System.out.println(dataObject.getComment());
     		
     		//System.out.println("\n\n");
     		
@@ -95,6 +110,8 @@ public class FileExplorer
     			ret+=smargs[1];
     		}
     	}
+    	if (ret == null)
+    		System.out.println("eclipse baaal");
     	return ret;
     }
 }
