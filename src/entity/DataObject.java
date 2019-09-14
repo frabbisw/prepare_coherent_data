@@ -11,6 +11,7 @@ public class DataObject {
 	String method_id;
 	String comment;
 	String method;
+	String methodName;
 	boolean coherent;
 	String fileName;
 	
@@ -54,6 +55,14 @@ public class DataObject {
 
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
+	}
+
+	public String getMethodName() {
+		return methodName;
+	}
+
+	public void setMethodName(String methodName) {
+		this.methodName = methodName;
 	}
 	
 	

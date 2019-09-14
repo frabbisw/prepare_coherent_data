@@ -9,6 +9,7 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.Javadoc;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 
 import entity.DataObject;
@@ -35,15 +36,18 @@ public class FileExplorer
     		cu.accept(new ASTVisitor() {
     			@Override
     			public boolean visit(MethodDeclaration node) {
-    				//dataObject.setMethod(node.toString());
-    				System.out.println(node.getJavadoc());
-    				//dataObject.setComment(node.getJavadoc().toString());
+    				dataObject.setMethod(node.toString());    				
+    				dataObject.setMethodName(node.getName().toString());
+    				
+    				//System.out.println(parseComment(node.getJavadoc()));
+    				
+    				dataObject.setComment(parseComment(node.getJavadoc()));
     				return super.visit(node);
     			}
     		});
     		
     		//System.out.println(dataObject.getFileName());
-    		//System.out.println(dataObject.getComment());
+    		System.out.println(dataObject.getComment());
     		
     		//System.out.println("\n\n");
     		
@@ -72,12 +76,25 @@ public class FileExplorer
 
 		return stringBuilder.toString();
 	}
-//    public static String parseComment(String javadoc) {
-//    	String [] args = javadoc.split("\n");
-//    	
-//    	for(int i=1; i<args.length-1; i++)
-//    	{
-//    		if(args.length>)
-//    	}
-//    }
+    public static String parseComment(Javadoc doc) {
+    	String ret = "";
+    	if(doc==null)	return "";
+
+    	String javadoc = doc.toString();
+    	
+    	String [] args = javadoc.split("\n");
+    	for(int i=1; i<args.length-1; i++)
+    	{
+    		if(args[i].length()>1) {
+    			if(args[i].contains("@"))
+    				break;
+    			
+    			String tmp = " "+args[i];
+    			
+    			String smargs [] = tmp.split("\\*");
+    			ret+=smargs[1];
+    		}
+    	}
+    	return ret;
+    }
 }
